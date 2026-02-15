@@ -3,6 +3,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { typography } from '../../theme/typography';
 import { colors } from '../../theme/colors';
 
+interface Props {
+  number: string;
+  title: string;
+  description: string;
+  accentColor: string;
+}
 export default function RuleCard({
   icon,
   title,

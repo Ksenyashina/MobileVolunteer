@@ -14,6 +14,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.primary,
-    padding: 16
+    // Убираем padding, чтобы хедер мог сам управлять отступами
   }
 });

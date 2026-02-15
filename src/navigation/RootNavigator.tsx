@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -19,20 +20,15 @@ const AuthStackScreen = () => <AuthStack />;
 const MainTabsScreen = () => <MainTabs />;
 
 export default function RootNavigator() {
-  const isAuthenticated = false;
+  // Временная заглушка для демонстрации
+  const userRole = 'user'; // 'user', 'volunteer', 'organizer', 'admin'
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isAuthenticated ? (
-          <>
             <Stack.Screen name="Public" component={PublicScreen} />
             <Stack.Screen name="Auth" component={AuthStackScreen} />
-            <Stack.Screen name="App" component={MainTabsScreen} />
-          </>
-        ) : (
-          <Stack.Screen name="Main" component={MainTabsScreen} />
-        )}
+          <Stack.Screen name="App" component={MainTabsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -5,120 +5,192 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView
+  Dimensions
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { DashboardStackParamList } from '../navigation/stacks/DashboardStack';
+import Page from '../components/layout/Page';
 import BurgerMenu from '../navigation/tabs/BurgerMenu';
 import AboutModal from '../components/modals/AboutModal';
 import RulesModal from '../components/modals/RulesModal';
 import ContactsModal from '../components/modals/ContactsModal';
 import StatsModal from '../components/modals/StatsModal';
+import { LineChart } from 'react-native-chart-kit';
 
 import { typography } from '../theme/typography';
 import { colors } from '../theme/colors';
 
-export default function DashboardScreen({ navigation }) {
+const { width } = Dimensions.get('window');
+
+type Props = {
+  navigation: NativeStackNavigationProp<DashboardStackParamList, 'Dashboard'>;
+};
+
+export default function DashboardScreen({ navigation }: Props) {
   const [aboutModalVisible, setAboutModalVisible] = useState(false);
   const [rulesModalVisible, setRulesModalVisible] = useState(false);
   const [contactsModalVisible, setContactsModalVisible] = useState(false);
   const [statsModalVisible, setStatsModalVisible] = useState(false);
 
+  // Данные для графика
+  const chartData = {
+    labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн'],
+    datasets: [
+      {
+        data: [4, 6, 8, 5, 7, 9],
+        color: (opacity = 1) => `rgba(211, 154, 106, ${opacity})`,
+        strokeWidth: 2
+      }
+    ],
+  };
+
+  const chartConfig = {
+    backgroundGradientFrom: '#fff',
+    backgroundGradientTo: '#fff',
+    color: (opacity = 1) => `rgba(211, 154, 106, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(102, 102, 102, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+      stroke: '#d39a6a',
+    },
+  };
+
   return (
-    <View style={styles.container}>
-      {/* Хедер с бургер-меню */}
-     <SafeAreaView style={styles.headerSafeArea}>
-  <View style={styles.header}>
-    <View style={styles.headerTop}>
-      <Text style={styles.logo}>Личный кабинет</Text>
-      <BurgerMenu
-        navigation={navigation}
-        userEmail={null}
-        onAboutPress={() => setAboutModalVisible(true)}
-        onRulesPress={() => setRulesModalVisible(true)}
-        onContactsPress={() => setContactsModalVisible(true)}
-        onStatsPress={() => setStatsModalVisible(true)}
-      />
-    </View>
-  </View>
-</SafeAreaView>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.welcomeSubtitle}>Добро пожаловать, Ксения Сеняшина!</Text>
-
-        {/* Статистика */}
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Мероприятий посещено</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Организовано</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>N/A</Text>
-            <Text style={styles.statLabel}>Средний рейтинг</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Отзывов получено</Text>
+    <Page>
+      <LinearGradient
+        colors={['#fff9f5', '#fff0e8']}
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        {/* Хедер с бургер-меню */}
+        <View style={styles.header}>
+          <View style={styles.headerTop}>
+            <Text style={styles.logo}>Личный кабинет</Text>
+            <BurgerMenu
+              navigation={navigation}
+              userEmail="Ksenya421@mail.ru"
+              onAboutPress={() => setAboutModalVisible(true)}
+              onRulesPress={() => setRulesModalVisible(true)}
+              onContactsPress={() => setContactsModalVisible(true)}
+              onStatsPress={() => setStatsModalVisible(true)}
+            />
           </View>
         </View>
 
-        {/* Кнопка настроек */}
-        <TouchableOpacity
-  style={styles.settingsButton}
-  onPress={() => navigation.navigate('ProfileSettings')}
->
-  <Text style={styles.settingsButtonText}>Настройки профиля →</Text>
-</TouchableOpacity>
-
-        {/* График активности */}
-        <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Активность</Text>
-          <View style={styles.chartPlaceholder}>
-            <Text style={styles.placeholderText}>График активности</Text>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Приветствие с иконкой настроек */}
+          <View style={styles.welcomeRow}>
+            <View>
+              <Text style={styles.welcomeTitle}>Добро пожаловать!</Text>
+              <Text style={styles.welcomeName}>Ксения Сеняшина</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.settingsIconButton}
+              onPress={() => navigation.navigate('ProfileSettings')}
+            >
+              <Ionicons name="settings-outline" size={24} color="#d39a6a" />
+            </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
 
-      {/* Модальные окна */}
-      <AboutModal visible={aboutModalVisible} onClose={() => setAboutModalVisible(false)} />
-      <RulesModal visible={rulesModalVisible} onClose={() => setRulesModalVisible(false)} />
-      <ContactsModal visible={contactsModalVisible} onClose={() => setContactsModalVisible(false)} />
-      <StatsModal visible={statsModalVisible} onClose={() => setStatsModalVisible(false)} />
-    </View>
+          {/* Статистика */}
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statLabel}>Мероприятий посещено</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statLabel}>Организовано</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>N/A</Text>
+              <Text style={styles.statLabel}>Средний рейтинг</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statLabel}>Отзывов получено</Text>
+            </View>
+          </View>
+
+          {/* График активности */}
+          <View style={styles.chartSection}>
+            <Text style={styles.sectionTitle}>Активность</Text>
+            <View style={styles.chartContainer}>
+              <LineChart
+                data={chartData}
+                width={width - 64}
+                height={220}
+                chartConfig={chartConfig}
+                bezier
+                style={styles.chart}
+                formatYLabel={(value) => value}
+                yAxisLabel=""
+                yAxisSuffix=""
+                fromZero
+              />
+            </View>
+          </View>
+
+          {/* Недавние мероприятия */}
+          <View style={styles.recentSection}>
+            <Text style={styles.sectionTitle}>Недавние мероприятия</Text>
+            <View style={styles.emptyState}>
+              <Ionicons name="calendar-outline" size={40} color="#d39a6a" />
+              <Text style={styles.emptyStateText}>У вас пока нет мероприятий</Text>
+              <TouchableOpacity
+                style={styles.browseButton}
+                onPress={() => navigation.getParent()?.navigate('Events')}
+              >
+                <Text style={styles.browseButtonText}>Посмотреть мероприятия</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Модальные окна */}
+        <AboutModal visible={aboutModalVisible} onClose={() => setAboutModalVisible(false)} />
+        <RulesModal visible={rulesModalVisible} onClose={() => setRulesModalVisible(false)} />
+        <ContactsModal visible={contactsModalVisible} onClose={() => setContactsModalVisible(false)} />
+        <StatsModal visible={statsModalVisible} onClose={() => setStatsModalVisible(false)} />
+      </LinearGradient>
+    </Page>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  gradient: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    width: '100%',
+    height: '100%',
   },
-  headerSafeArea: {
-    backgroundColor: '#FFFFFF',
+  header: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#fae1d6',
+    borderRadius: 30,
+    shadowColor: '#d39a6a',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: '#fae1d6',
   },
-  hheader: {
-  marginHorizontal: 16,
-  marginTop: 12,
-  marginBottom: 24,
-  paddingVertical: 12,
-  paddingHorizontal: 16,
-  backgroundColor: '#fae1d6', // персиковый
-  borderRadius: 30,
-  // тень
-  shadowColor: '#d39a6a',
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.2,
-  shadowRadius: 8,
-  elevation: 6,
-  borderWidth: 1,
-  borderColor: '#fae1d6',
-},
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 4,
   },
   logo: {
     ...typography.h2,
@@ -126,22 +198,39 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  headerTitle: {
-    ...typography.h3,
-    color: colors.textPrimary,
-    fontSize: 22,
-    fontWeight: '600',
-  },
   content: {
     flex: 1,
     paddingHorizontal: 16,
   },
-  welcomeSubtitle: {
+  welcomeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 24,
+  },
+  welcomeTitle: {
     ...typography.body,
     color: colors.textSecondary,
     fontSize: 14,
-    marginTop: 16,
-    marginBottom: 20,
+  },
+  welcomeName: {
+    ...typography.h3,
+    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  settingsIconButton: {
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    width: 46,
+    height: 46,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#f0e0d0',
   },
   statsGrid: {
     flexDirection: 'row',
@@ -151,13 +240,18 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: '48%',
-    backgroundColor: '#F9F9F9',
-    borderRadius: 12,
+    backgroundColor: '#fff',
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#F0F0F0',
+    borderColor: '#f0e0d0',
+    shadowColor: '#d39a6a',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   statNumber: {
     ...typography.h2,
@@ -171,17 +265,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontSize: 13,
     textAlign: 'center',
-  },
-  settingsButton: {
-    alignSelf: 'flex-start',
-    marginBottom: 24,
-    paddingVertical: 8,
-  },
-  settingsButtonText: {
-    ...typography.body,
-    color: '#d39a6a',
-    fontSize: 14,
-    fontWeight: '500',
+    lineHeight: 18,
   },
   chartSection: {
     marginBottom: 24,
@@ -193,16 +277,53 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 12,
   },
-  chartPlaceholder: {
-    backgroundColor: '#F9F9F9',
-    borderRadius: 12,
-    padding: 40,
+  chartContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#f0e0d0',
+    shadowColor: '#d39a6a',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  chart: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+  recentSection: {
+    marginBottom: 30,
+  },
+  emptyState: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 30,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#F0F0F0',
+    borderColor: '#f0e0d0',
+    shadowColor: '#d39a6a',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  placeholderText: {
+  emptyStateText: {
     ...typography.body,
     color: colors.textSecondary,
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  browseButton: {
+    backgroundColor: '#d39a6a',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 30,
+  },
+  browseButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

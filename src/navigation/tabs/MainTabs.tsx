@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// Импорты экранов
-import DashboardScreen from '../../screens/DashboardScreen';
-import EventsScreen from '../../screens/EventsScreen';
+// Импорты стеков
+import DashboardStack from '../stacks/DashboardStack';
+import AdminStack from '../stacks/AdminStack';
+import EventsStack from '../stacks/EventsStack';
 import MyApplicationsScreen from '../../screens/MyApplicationsScreen';
 import OrganizationApplicationsScreen from '../../screens/OrganizationApplicationsScreen';
 import AdminOverviewScreen from '../../screens/AdminOverviewScreen';
@@ -16,8 +17,8 @@ import { colors } from '../../theme/colors';
 const Tab = createBottomTabNavigator();
 
 // ВРЕМЕННО: для теста ставим false, чтобы неавторизованный не видел кабинет
-const isAuthenticated = false; // Позже заменится на реальную проверку из контекста
-const userRole = 'user'; // 'user', 'volunteer', 'organizer', 'admin'
+const isAuthenticated = true; // Позже заменится на реальную проверку из контекста
+const userRole = 'admin'; // 'user', 'volunteer', 'organizer', 'admin'
 
 export default function MainTabs() {
   // Если пользователь не авторизован - не показываем табы с кабинетом
@@ -32,15 +33,15 @@ export default function MainTabs() {
       >
         {/* Только мероприятия доступны без авторизации */}
         <Tab.Screen
-          name="Events"
-          component={EventsScreen}
+          name="EventsStack"
+          component={EventsStack}
           options={{
             tabBarButton: (props) => (
               <TouchableOpacity {...props} style={styles.tabItem}>
                 <Ionicons
                   name="calendar-outline"
                   size={24}
-                  color={props.accessibilityState?.selected ? '#d39a6a' : colors.textSecondary}
+                  color={props.accessibilityState?.selected ? '#d39a6a' : '#999999'}
                 />
                 <Text style={[
                   styles.tabText,
@@ -67,15 +68,15 @@ export default function MainTabs() {
     >
       {/* Кабинет - доступен всем авторизованным */}
       <Tab.Screen
-        name="Dashboard"
-        component={DashboardScreen}
+        name="DashboardStack"
+        component={DashboardStack}
         options={{
           tabBarButton: (props) => (
             <TouchableOpacity {...props} style={styles.tabItem}>
               <Ionicons
                 name="person-outline"
                 size={24}
-                color={props.accessibilityState?.selected ? '#d39a6a' : colors.textSecondary}
+                color={props.accessibilityState?.selected ? '#d39a6a' : '#999999'}
               />
               <Text style={[
                 styles.tabText,
@@ -90,15 +91,15 @@ export default function MainTabs() {
 
       {/* Мероприятия - доступны всем */}
       <Tab.Screen
-        name="Events"
-        component={EventsScreen}
+        name="EventsStack"
+        component={EventsStack}
         options={{
           tabBarButton: (props) => (
             <TouchableOpacity {...props} style={styles.tabItem}>
               <Ionicons
                 name="calendar-outline"
                 size={24}
-                color={props.accessibilityState?.selected ? '#d39a6a' : colors.textSecondary}
+                color={props.accessibilityState?.selected ? '#d39a6a' : '#999999'}
               />
               <Text style={[
                 styles.tabText,
@@ -122,7 +123,7 @@ export default function MainTabs() {
                 <Ionicons
                   name="document-text-outline"
                   size={24}
-                  color={props.accessibilityState?.selected ? '#d39a6a' : colors.textSecondary}
+                  color={props.accessibilityState?.selected ? '#d39a6a' : '#999999'}
                 />
                 <Text style={[
                   styles.tabText,
@@ -147,7 +148,7 @@ export default function MainTabs() {
                 <Ionicons
                   name="people-outline"
                   size={24}
-                  color={props.accessibilityState?.selected ? '#d39a6a' : colors.textSecondary}
+                  color={props.accessibilityState?.selected ? '#d39a6a' : '#999999'}
                 />
                 <Text style={[
                   styles.tabText,
@@ -164,15 +165,15 @@ export default function MainTabs() {
       {/* Админ - только для admin */}
       {userRole === 'admin' && (
         <Tab.Screen
-          name="Admin"
-          component={AdminOverviewScreen}
+          name="AdminStack"
+          component={AdminStack}
           options={{
             tabBarButton: (props) => (
               <TouchableOpacity {...props} style={styles.tabItem}>
                 <Ionicons
                   name="shield-outline"
                   size={24}
-                  color={props.accessibilityState?.selected ? '#d39a6a' : colors.textSecondary}
+                  color={props.accessibilityState?.selected ? '#d39a6a' : '#999999'}
                 />
                 <Text style={[
                   styles.tabText,
@@ -208,7 +209,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     ...typography.caption,
-    color: colors.textSecondary,
+    color: '#999999',
     fontSize: 11,
     marginTop: 2,
   },

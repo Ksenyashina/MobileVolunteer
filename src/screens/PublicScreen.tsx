@@ -24,7 +24,52 @@ import { typography } from '../theme/typography';
 import { colors } from '../theme/colors';
 
 const { width } = Dimensions.get('window');
-
+const events = [
+  {
+    id: '1',
+    title: 'Tech for Good 2025',
+    location: 'Москва, Экспоцентр',
+    date: '18.12.2025',
+    spots: 20,
+    spotsLeft: 0,
+    tags: ['Образование', 'IT', 'Наука'],
+    status: 'pending', // 'pending', 'approved', 'rejected'
+    image: require('../../assets/event1.png')
+  },
+  {
+    id: '2',
+    title: 'Зеленый Город: Посадка деревьев',
+    location: 'Санкт-Петербург, Парк 300-летия',
+    date: '23.12.2025',
+    spots: 30,
+    spotsLeft: 0,
+    tags: ['Экология', 'Урбанистика', 'Благотворительность'],
+    status: 'approved',
+    image: require('../../assets/event2.png')
+  },
+  {
+    id: '3',
+    title: 'День открытых дверей в приюте',
+    location: 'Казань, Приют "Надежда"',
+    date: '18.12.2025',
+    spots: 10,
+    spotsLeft: 10,
+    tags: ['Животные', 'Дети'],
+    status: 'pending',
+    image: require('../../assets/event1.png')
+  },
+  {
+    id: '4',
+    title: 'Спортивный марафон',
+    location: 'Екатеринбург, Центральный стадион',
+    date: '25.12.2025',
+    spots: 50,
+    spotsLeft: 25,
+    tags: ['Спорт', 'Благотворительность'],
+    status: 'approved',
+    image: require('../../assets/event2.png')
+  }
+];
 export default function PublicScreen({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -95,7 +140,7 @@ export default function PublicScreen({ navigation }) {
                 end={{ x: 1, y: 1 }}
               >
                 <PrimaryButton
-                  title="Присоединиться →"
+                  title="Присоединиться"
                   onPress={() => navigation.navigate('Auth')}
                   style={styles.primaryButton}
                 />
@@ -106,9 +151,8 @@ export default function PublicScreen({ navigation }) {
                 variant="outline"
                 onPress={() =>
                   navigation.navigate('App', {
-                    screen: 'EventsStack',
-                    params: { screen: 'Events' }
-                  })
+  screen: 'EventsStack'
+})
                 }
                 style={styles.secondaryButton}
               />
@@ -205,167 +249,75 @@ export default function PublicScreen({ navigation }) {
           </LinearGradient>
 
           {/* АКТУАЛЬНЫЕ СОБЫТИЯ */}
-          <View style={styles.eventsHeader}>
-            <View>
-              <Text style={styles.eventsTitle}>Актуальные события</Text>
-              <Text style={styles.eventsSubtitle}>
-                Примите участие в значимых проектах
-              </Text>
-            </View>
+<View style={styles.eventsHeader}>
+  <View>
+    <Text style={styles.eventsTitle}>Актуальные события</Text>
+    <Text style={styles.eventsSubtitle}>
+      Примите участие в значимых проектах
+    </Text>
+  </View>
+  <TouchableOpacity
+    onPress={() => navigation.navigate('App', {
+      screen: 'EventsStack'
+    })}
+    activeOpacity={0.7}
+  >
+    <Text style={styles.eventsAllLink}>Все →</Text>
+  </TouchableOpacity>
+</View>
+
+{/* Вертикальный список событий */}
+<View style={styles.eventsList}>
+  {events.slice(0, 3).map((event) => (
+    <LinearGradient
+      key={event.id}
+      colors={['#ffffff', '#fff5f0']}
+      style={styles.eventListItem}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <Image
+        source={event.image}
+        style={styles.eventListImage}
+        resizeMode="cover"
+      />
+      <View style={styles.eventListContent}>
+        <Text style={styles.eventListTitle}>{event.title}</Text>
+        <View style={styles.eventListDetails}>
+          <View style={styles.eventDetailRow}>
+            <Ionicons name="calendar-outline" size={14} color="#d39a6a" />
+            <Text style={styles.eventListDate}> {event.date}</Text>
+          </View>
+          <View style={styles.eventDetailRow}>
+            <Ionicons name="location-outline" size={14} color="#d39a6a" />
+            <Text style={styles.eventListLocation}> {event.location}</Text>
+          </View>
+        </View>
+        <View style={styles.eventListFooter}>
+          <Text style={styles.eventListSpots}>Нужно: {event.spots}</Text>
+          <LinearGradient
+            colors={['#d39a6a', '#c48454']}
+            style={styles.gradientSmallButton}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
             <TouchableOpacity
               onPress={() => navigation.navigate('App', {
-                screen: 'EventsStack',
-                params: { screen: 'Events' }
-              })}
-              activeOpacity={0.7}
+  screen: 'EventsStack',
+  params: {
+    screen: 'EventDetails',
+    params: { event }
+  }
+})}
             >
-              <Text style={styles.eventsAllLink}>Все →</Text>
+              <Text style={styles.eventListButtonText}>Подробнее</Text>
             </TouchableOpacity>
-          </View>
-
-          {/* Вертикальный список событий */}
-          <View style={styles.eventsList}>
-            <LinearGradient
-              colors={['#ffffff', '#fff5f0']}
-              style={styles.eventListItem}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Image
-                source={require('../../assets/event1.png')}
-                style={styles.eventListImage}
-                resizeMode="cover"
-              />
-              <View style={styles.eventListContent}>
-                <Text style={styles.eventListTitle}>Мастер-класс для детей</Text>
-                <View style={styles.eventListDetails}>
-                  <View style={styles.eventDetailRow}>
-                    <Ionicons name="calendar-outline" size={14} color="#d39a6a" />
-                    <Text style={styles.eventListDate}> 11 декабря 2025</Text>
-                  </View>
-                  <View style={styles.eventDetailRow}>
-                    <Ionicons name="location-outline" size={14} color="#d39a6a" />
-                    <Text style={styles.eventListLocation}> Санкт-Петербург, Арт-центр</Text>
-                  </View>
-                </View>
-                <View style={styles.eventListFooter}>
-                  <Text style={styles.eventListSpots}>Нужно: 4</Text>
-                  <LinearGradient
-                    colors={['#d39a6a', '#c48454']}
-                    style={styles.gradientSmallButton}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('App', {
-                        screen: 'EventsStack',
-                        params: {
-                          screen: 'EventDetails',
-                          params: { id: '1' }
-                        }
-                      })}
-                    >
-                      <Text style={styles.eventListButtonText}>Подробнее</Text>
-                    </TouchableOpacity>
-                  </LinearGradient>
-                </View>
-              </View>
-            </LinearGradient>
-
-            <LinearGradient
-              colors={['#ffffff', '#fff5f0']}
-              style={styles.eventListItem}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Image
-                source={require('../../assets/event2.png')}
-                style={styles.eventListImage}
-                resizeMode="cover"
-              />
-              <View style={styles.eventListContent}>
-                <Text style={styles.eventListTitle}>Благотворительный забег</Text>
-                <View style={styles.eventListDetails}>
-                  <View style={styles.eventDetailRow}>
-                    <Ionicons name="calendar-outline" size={14} color="#d39a6a" />
-                    <Text style={styles.eventListDate}> 31 декабря 2025</Text>
-                  </View>
-                  <View style={styles.eventDetailRow}>
-                    <Ionicons name="location-outline" size={14} color="#d39a6a" />
-                    <Text style={styles.eventListLocation}> Москва, Лужники</Text>
-                  </View>
-                </View>
-                <View style={styles.eventListFooter}>
-                  <Text style={styles.eventListSpots}>Нужно: 99</Text>
-                  <LinearGradient
-                    colors={['#d39a6a', '#c48454']}
-                    style={styles.gradientSmallButton}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('App', {
-                        screen: 'EventsStack',
-                        params: {
-                          screen: 'EventDetails',
-                          params: { id: '2' }
-                        }
-                      })}
-                    >
-                      <Text style={styles.eventListButtonText}>Подробнее</Text>
-                    </TouchableOpacity>
-                  </LinearGradient>
-                </View>
-              </View>
-            </LinearGradient>
-
-            <LinearGradient
-              colors={['#ffffff', '#fff5f0']}
-              style={styles.eventListItem}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Image
-                source={require('../../assets/event1.png')}
-                style={styles.eventListImage}
-                resizeMode="cover"
-              />
-              <View style={styles.eventListContent}>
-                <Text style={styles.eventListTitle}>Футбольный матч</Text>
-                <View style={styles.eventListDetails}>
-                  <View style={styles.eventDetailRow}>
-                    <Ionicons name="calendar-outline" size={14} color="#d39a6a" />
-                    <Text style={styles.eventListDate}> 12 марта 2026</Text>
-                  </View>
-                  <View style={styles.eventDetailRow}>
-                    <Ionicons name="location-outline" size={14} color="#d39a6a" />
-                    <Text style={styles.eventListLocation}> г. Казань, Казань Арена</Text>
-                  </View>
-                </View>
-                <View style={styles.eventListFooter}>
-                  <Text style={styles.eventListSpots}>Нужно: 50</Text>
-                  <LinearGradient
-                    colors={['#d39a6a', '#c48454']}
-                    style={styles.gradientSmallButton}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('App', {
-                        screen: 'EventsStack',
-                        params: {
-                          screen: 'EventDetails',
-                          params: { id: '3' }
-                        }
-                      })}
-                    >
-                      <Text style={styles.eventListButtonText}>Подробнее</Text>
-                    </TouchableOpacity>
-                  </LinearGradient>
-                </View>
-              </View>
-            </LinearGradient>
-          </View>
+          </LinearGradient>
+        </View>
+      </View>
+    </LinearGradient>
+  ))}
+</View>
 
           {/* ПРАВИЛА СООБЩЕСТВА */}
           <Text style={styles.rulesMainTitle}>Правила сообщества</Text>
@@ -657,10 +609,11 @@ const styles = StyleSheet.create({
     borderColor: '#f0e0d0',
   },
   eventListImage: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#f5e5d5',
-  },
+  width: 100,
+  height: '100%',
+  backgroundColor: '#f5e5d5',
+  resizeMode: 'cover', // или 'contain' в зависимости от того, что нужно
+},
   eventListContent: {
     flex: 1,
     padding: 12,

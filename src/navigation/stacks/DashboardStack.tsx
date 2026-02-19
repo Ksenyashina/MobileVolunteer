@@ -3,7 +3,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DashboardScreen from '../../screens/DashboardScreen';
 import ProfileSettingsScreen from '../../screens/ProfileSettingsScreen';
 
-const Stack = createNativeStackNavigator();
+export type DashboardStackParamList = {
+  Dashboard: undefined;
+  ProfileSettings: undefined;
+};
+
+const Stack = createNativeStackNavigator<DashboardStackParamList>();
 
 export default function DashboardStack() {
   return (
